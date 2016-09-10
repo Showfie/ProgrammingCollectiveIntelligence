@@ -106,4 +106,24 @@ def buildtree(rows,scoref=entropy):
 				best_gain=gain
 				best_criteria=(col,value)
 				best_sets=(set1,set2)
-			
+	# sub fork
+	if best_gain>0:
+		trueBranch=buildtree(best_sets[0])
+		falseBranch=buildtree(best_sets[1])
+		return decisionnode(col=best_criteria[0],value=best_criteria[1],
+			tb=trueBranch,fb=falseBranch)
+	else:
+		return decisionnode(results=uniquecounts(rows))
+
+def printtree(tree,indent=''):
+	# is leaf node:
+	if tree.results!=None:
+		print str(tree.results)
+	else:
+		print str(tree.col)+':'+str(tree.value)+'? '
+
+		# print trueBranch
+		print indent+'T->',
+		printtree(tree.tb, indent+'  ')
+		print indent+'F->',
+		printtree(tree.fb, indent+'  ')
